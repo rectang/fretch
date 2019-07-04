@@ -3,5 +3,6 @@ name = "fretch"
 version = "0.1.0"
 authors = ["Marvin Humphrey <marvin@rectangular.com>"]
 edition = "2018"
+license = "CC0-1.0"
 
 [dependencies]
