@@ -4,5 +4,11 @@ version = "0.1.0"
 authors = ["Marvin Humphrey <marvin@rectangular.com>"]
 edition = "2018"
 license = "CC0-1.0"
+categories = ["data-structures"]
+keywords = ["undo", "redo", "git"]
+readme = "README.md"
+
+[badges]
+maintenance = { status = "experimental" }
 
 [dependencies]
