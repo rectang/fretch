@@ -2,6 +2,8 @@
 // copyright and related and neighboring rights to this software to the
 // public domain. See <http://creativecommons.org/publicdomain/zero/1.0/>
 
+pub mod initialize;
+
 #[cfg(test)]
 mod tests {
     #[test]
