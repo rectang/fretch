@@ -3,6 +3,7 @@
 // public domain. See <http://creativecommons.org/publicdomain/zero/1.0/>
 
 pub mod initialize;
+pub mod mutex;
 
 #[cfg(test)]
 mod tests {
