@@ -12,6 +12,10 @@ pub fn init_repo(path: &Path) -> io::Result<()> {
         fs::create_dir_all(path)?;
     }
     init_repo_dirs(path)?;
+    init_head(path)?;
+    init_config(path)?;
+    init_description(path)?;
+    init_exclude(path)?;
     Ok(())
 }
 
@@ -39,6 +43,40 @@ fn init_repo_dirs(repo_path: &Path) -> io::Result<()> {
         }
     }
     Ok(())
+}
+
+fn init_head(repo_path: &Path) -> io::Result<()> {
+    static HEAD_CONTENT: &str = "ref: refs/heads/master\n";
+    let head_path = PathBuf::from(repo_path).join("HEAD");
+    fs::write(head_path, HEAD_CONTENT)
+}
+
+fn init_config(repo_path: &Path) -> io::Result<()> {
+    // TODO: Implement this as a Config type.
+    static CONFIG_CONTENT: &str = "
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+";
+    let config_path = PathBuf::from(repo_path).join("config");
+    fs::write(config_path, CONFIG_CONTENT)
+}
+
+fn init_description(repo_path: &Path) -> io::Result<()> {
+    static DESCRIPTION_CONTENT: &str =
+        "Unnamed repository; edit this file 'description' to name the repository.\n";
+    let desc_path = PathBuf::from(repo_path).join("description");
+    fs::write(desc_path, DESCRIPTION_CONTENT)
+}
+
+fn init_exclude(repo_path: &Path) -> io::Result<()> {
+    static EXCLUDE_CONTENT: &str = "# exclude file\n";
+    let exclude_path = PathBuf::from(repo_path).join("info").join("exclude");
+    fs::write(exclude_path, EXCLUDE_CONTENT)
 }
 
 #[cfg(test)]
