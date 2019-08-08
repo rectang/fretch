@@ -7,7 +7,8 @@ use std::io;
 use std::path::{Path, PathBuf};
 
 /// Initalize a repository at `path`.
-pub fn init_repo(path: &Path) -> io::Result<()> {
+pub fn init_repo<P: AsRef<Path>>(path: P) -> io::Result<()> {
+    let path = path.as_ref();
     if !path.exists() {
         fs::create_dir_all(path)?;
     }
@@ -17,7 +18,7 @@ pub fn init_repo(path: &Path) -> io::Result<()> {
     Ok(())
 }
 
-fn init_repo_dirs(repo_path: &Path) -> io::Result<()> {
+fn init_repo_dirs<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     static DIRS: [&'static str; 4] = [
         "info",
         "objects",
@@ -25,7 +26,7 @@ fn init_repo_dirs(repo_path: &Path) -> io::Result<()> {
         "refs/heads",
     ];
     for dir in DIRS.iter() {
-        let mut buf = PathBuf::from(repo_path);
+        let mut buf = PathBuf::from(repo_path.as_ref());
         for component in dir.split("/") {
             buf.push(component);
         }
@@ -38,13 +39,13 @@ fn init_repo_dirs(repo_path: &Path) -> io::Result<()> {
     Ok(())
 }
 
-fn init_head(repo_path: &Path) -> io::Result<()> {
+fn init_head<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     static HEAD_CONTENT: &str = "ref: refs/heads/master\n";
-    let head_path = PathBuf::from(repo_path).join("HEAD");
+    let head_path = repo_path.as_ref().join("HEAD");
     fs::write(head_path, HEAD_CONTENT)
 }
 
-fn init_config(repo_path: &Path) -> io::Result<()> {
+fn init_config<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     // TODO: Implement this as a Config type.
     static CONFIG_CONTENT: &str = "
 [core]
@@ -55,7 +56,7 @@ fn init_config(repo_path: &Path) -> io::Result<()> {
 	ignorecase = true
 	precomposeunicode = true
 ";
-    let config_path = PathBuf::from(repo_path).join("config");
+    let config_path = repo_path.as_ref().join("config");
     fs::write(config_path, CONFIG_CONTENT)
 }
 
@@ -65,10 +66,10 @@ mod tests {
 
     #[test]
     fn test_init_repo() {
-        let repo_path = Path::new("_fretch_test"); // Careful, will rm -rf!
+        let repo_path = "_fretch_test"; // Careful, will rm -rf!
 
         // Clean up if needed.
-        if repo_path.exists() {
+        if let Ok(_) = fs::metadata(repo_path) {
             fs::remove_dir_all(repo_path).unwrap();
         }
 
