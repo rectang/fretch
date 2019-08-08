@@ -24,6 +24,7 @@ use std::path::PathBuf;
 
 mod initialize;
 pub mod mutex;
+mod object;
 
 pub struct Engine {
     repo_path: PathBuf,
