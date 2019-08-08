@@ -61,7 +61,7 @@ impl Engine {
 
     /// Store the object in the repository's content-addressable store.
     pub fn store<O: Object>(&mut self, obj: &mut O) -> io::Result<()> {
-        obj.store(&self.objects_dir)
+        obj.put(&self.objects_dir)
     }
 }
 

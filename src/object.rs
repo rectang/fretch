@@ -30,7 +30,7 @@ pub trait Object {
     fn accumulate(&mut self, sink: &mut Accumulator) -> io::Result<()>;
 
     /// Put the Object into the content-addressable store.
-    fn store<P: Into<PathBuf>>(&mut self, objects_dir: P) -> io::Result<()> {
+    fn put<P: Into<PathBuf>>(&mut self, objects_dir: P) -> io::Result<()> {
         let objects_dir = objects_dir.into();
 
         // Accumulate the Object as a sequence of serialized byte slices.
@@ -68,7 +68,7 @@ mod tests {
     }
 
     #[test]
-    fn test_store() {
+    fn test_put() {
         let test_dir = "_fretch_object_test"; // careful will rm -rf
         if let Ok(_) = fs::metadata(test_dir) {
             fs::remove_dir_all(test_dir).unwrap(); // clean up if needed
@@ -76,7 +76,7 @@ mod tests {
         fs::create_dir(test_dir).unwrap();
 
         let mut hello = Hello {};
-        hello.store(test_dir).unwrap();
+        hello.put(test_dir).unwrap();
 
         let expected: PathBuf = [test_dir, "3b", "18e512dba79e4c8300dd08aeb37f8e728b8dad"]
             .iter()

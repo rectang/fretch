@@ -34,7 +34,7 @@ mod tests {
     use std::path::PathBuf;
 
     #[test]
-    fn test_store() {
+    fn test_put() {
         let test_dir = "_fretch_blob_test"; // careful will rm -rf
         if let Ok(_) = fs::metadata(test_dir) {
             fs::remove_dir_all(test_dir).unwrap(); // clean up if needed
@@ -43,7 +43,7 @@ mod tests {
 
         let mut content = b"hello world\n".to_owned();
         let mut hello = Blob::new(&mut content);
-        hello.store(test_dir).unwrap();
+        hello.put(test_dir).unwrap();
 
         let expected: PathBuf = [test_dir, "3b", "18e512dba79e4c8300dd08aeb37f8e728b8dad"]
             .iter()
