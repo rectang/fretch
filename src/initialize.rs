@@ -14,22 +14,15 @@ pub fn init_repo(path: &Path) -> io::Result<()> {
     init_repo_dirs(path)?;
     init_head(path)?;
     init_config(path)?;
-    init_description(path)?;
-    init_exclude(path)?;
     Ok(())
 }
 
 fn init_repo_dirs(repo_path: &Path) -> io::Result<()> {
-    static DIRS: [&'static str; 9] = [
-        "branches",
-        "hooks",
+    static DIRS: [&'static str; 4] = [
         "info",
         "objects",
-        "objects/info",
-        "objects/pack",
         "refs",
         "refs/heads",
-        "refs/tags",
     ];
     for dir in DIRS.iter() {
         let mut buf = PathBuf::from(repo_path);
@@ -64,19 +57,6 @@ fn init_config(repo_path: &Path) -> io::Result<()> {
 ";
     let config_path = PathBuf::from(repo_path).join("config");
     fs::write(config_path, CONFIG_CONTENT)
-}
-
-fn init_description(repo_path: &Path) -> io::Result<()> {
-    static DESCRIPTION_CONTENT: &str =
-        "Unnamed repository; edit this file 'description' to name the repository.\n";
-    let desc_path = PathBuf::from(repo_path).join("description");
-    fs::write(desc_path, DESCRIPTION_CONTENT)
-}
-
-fn init_exclude(repo_path: &Path) -> io::Result<()> {
-    static EXCLUDE_CONTENT: &str = "# exclude file\n";
-    let exclude_path = PathBuf::from(repo_path).join("info").join("exclude");
-    fs::write(exclude_path, EXCLUDE_CONTENT)
 }
 
 #[cfg(test)]
