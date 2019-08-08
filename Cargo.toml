@@ -13,3 +13,5 @@ readme = "README.md"
 maintenance = { status = "experimental" }
 
 [dependencies]
+sha1 = "0.6.0"
+libflate = "0.1"
