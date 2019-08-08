@@ -8,10 +8,13 @@
 //!
 //! ```rust
 //! use fretch::Engine;
+//! use fretch::blob::Blob;
 //!
-//! let engine = Engine::new("/path/to/repo").unwrap();
-//! engine.init();
-//! // ...
+//! let mut engine = Engine::new("fretch_demo_hello/.git").unwrap();
+//! engine.init().unwrap();
+//! let mut content = b"hello world\n".to_owned();
+//! let mut hello = Blob::new(&mut content);
+//! engine.store(&mut hello).unwrap();
 //!
 //! ```
 //!
@@ -22,13 +25,16 @@ use std::env;
 use std::io;
 use std::path::PathBuf;
 
+use crate::object::Object;
+
+pub mod blob;
 mod initialize;
 pub mod mutex;
 pub mod object;
-pub mod blob;
 
 pub struct Engine {
     repo_path: PathBuf,
+    objects_dir: PathBuf,
 }
 
 impl Engine {
@@ -41,11 +47,21 @@ impl Engine {
             };
             path = cwd.join(path)
         }
-        Ok(Engine { repo_path: path })
+        let objects_dir = PathBuf::new().join(&path).join("objects");
+        let engine = Engine {
+            repo_path: path,
+            objects_dir: objects_dir,
+        };
+        Ok(engine)
     }
 
     pub fn init(&self) -> io::Result<()> {
         initialize::init_repo(&self.repo_path)
+    }
+
+    /// Store the object in the repository's content-addressable store.
+    pub fn store<O: Object>(&mut self, obj: &mut O) -> io::Result<()> {
+        obj.store(&self.objects_dir)
     }
 }
 
