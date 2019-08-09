@@ -9,6 +9,8 @@ use std::path::PathBuf;
 use libflate::zlib;
 use sha1;
 
+/// A sink which accepts a byte slices representing the serialized form of an
+/// `Object`.
 pub struct Accumulator {
     encoder: zlib::Encoder<std::vec::Vec<u8>>,
     digester: sha1::Sha1,
@@ -24,6 +26,8 @@ impl Accumulator {
     }
 }
 
+/// A thing which may be written to the repository's content-addressable
+/// store.
 pub trait Object {
     /// Collect a sequence of byte slices into the supplied `sink` which
     /// when placed end-to-end represent the serialized form of the object.
@@ -40,8 +44,7 @@ pub trait Object {
         };
         self.accumulate(&mut sink)?;
 
-        // Calculate the SHA1 checksum from the serialized object content.
-        // Prep directory and filepath.
+        // Calculate SHA1 checksum, prep directory and filepath.
         let digest = sink.digester.digest().to_string();
         let dir = &digest[0..2];
         let filename = &digest[2..];

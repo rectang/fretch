@@ -18,8 +18,17 @@
 //!
 //! ```
 //!
-//! With Fretch, an application is modeled as a directory full of files, and
-//! the commands in the application are modeled as changesets.
+//! With Fretch, an application is modeled as a directory full of files.  It
+//! is intended for use in applications where each command can be modeled as a
+//! changeset.
+//!
+//! This approach offers several advantages:
+//!
+//! * Undo/redo capabilities persist can beyond the life of a process.
+//! * Consolidation and truncation of history using familiar techniques.
+//! * Offline introspection using tools from the Git ecosystem.
+//! * An archive-friendly public file format which will still be readable for
+//!   into the far future.
 
 use std::env;
 use std::io;
@@ -32,12 +41,18 @@ mod initialize;
 pub mod mutex;
 pub mod object;
 
+/// Engine which represents the state of the application and which
+/// encapsulates the repository.
 pub struct Engine {
     repo_path: PathBuf,
     objects_dir: PathBuf,
 }
 
 impl Engine {
+    /// Create a new Engine with a repository located at `path`.
+    ///
+    /// In this context, "repository" means a bare repository, not a working
+    /// tree.
     pub fn new<P: Into<PathBuf>>(path: P) -> io::Result<Engine> {
         let mut path = path.into();
         if !path.is_absolute() {
@@ -55,11 +70,12 @@ impl Engine {
         Ok(engine)
     }
 
+    /// Initialize the repository.
     pub fn init(&self) -> io::Result<()> {
         initialize::init_repo(&self.repo_path)
     }
 
-    /// Store the object in the repository's content-addressable store.
+    /// Write the `Object` to the repository's content-addressable store.
     pub fn store<O: Object>(&mut self, obj: &mut O) -> io::Result<()> {
         obj.put(&self.objects_dir)
     }

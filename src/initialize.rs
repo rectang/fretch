@@ -18,6 +18,7 @@ pub fn init_repo<P: AsRef<Path>>(path: P) -> io::Result<()> {
     Ok(())
 }
 
+/// Create all the required directories for a minimal repository.
 fn init_repo_dirs<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     static DIRS: [&'static str; 4] = [
         "info",
@@ -39,14 +40,19 @@ fn init_repo_dirs<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     Ok(())
 }
 
+/// Create the HEAD file.
 fn init_head<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     static HEAD_CONTENT: &str = "ref: refs/heads/master\n";
     let head_path = repo_path.as_ref().join("HEAD");
     fs::write(head_path, HEAD_CONTENT)
 }
 
+/// Create a default repository config file.
 fn init_config<P: AsRef<Path>>(repo_path: P) -> io::Result<()> {
     // TODO: Implement this as a Config type.
+    // TODO: These values are system specific and will cause repository
+    // corruption on systems where they are inaccurate.  The proper thing to
+    // do is probe for them.
     static CONFIG_CONTENT: &str = "
 [core]
 	repositoryformatversion = 0

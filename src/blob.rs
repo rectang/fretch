@@ -6,11 +6,13 @@ use std::io;
 
 use crate::object::{Accumulator, Object};
 
+/// An `Object` which represents arbibrary content.
 pub struct Blob<'a> {
     content: &'a mut [u8],
 }
 
 impl<'a> Blob<'a> {
+    /// Create a new Blob representing `content`.
     pub fn new(content: &'a mut [u8]) -> Blob<'a> {
         Blob { content: content }
     }

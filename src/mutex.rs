@@ -7,6 +7,7 @@ use std::io;
 use std::io::ErrorKind;
 use std::path::PathBuf;
 
+/// Mutex lock.
 pub trait Lock {
     /// Attempt to lock the resource.  Returns true of the attempt to lock
     /// succeeds without problems, false if the lock was already successfully
@@ -45,7 +46,6 @@ impl LockFile {
 }
 
 impl Lock for LockFile {
-    /// Attempt to acquire a mutex lock on the resource.
     fn lock(&mut self) -> io::Result<bool> {
         if self.locked {
             return Ok(false);
